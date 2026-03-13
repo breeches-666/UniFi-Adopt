@@ -58,14 +58,9 @@ echo Starte SSH-Verbindungen zu %SUBNET%.1 - %SUBNET%.254 ...
 echo Befehl: set-inform http://%DOMAIN%:8080/inform
 echo.
 
-REM Hilfs-Skript erstellen (eigener Prozess = saubere Pipe fuer echo y)
-set "HELPER=%TEMP%\unifi-adopt-helper.cmd"
-echo @echo off > "%HELPER%"
-echo echo y ^| plink -ssh -P 22 -l ubnt -pw ubnt %%1 mca-cli-op set-inform http://%%2:8080/inform >> "%HELPER%"
-
 for /l %%i in (1,1,254) do (
     echo [%%i/254] Verbinde zu %SUBNET%.%%i ...
-    start /min "" cmd /c ""%HELPER%" %SUBNET%.%%i %DOMAIN%"
+    start "UniFi %%i" /min cmd /c "echo y| plink -ssh -P 22 -l ubnt -pw ubnt %SUBNET%.%%i mca-cli-op set-inform http://%DOMAIN%:8080/inform"
 )
 
 echo.
@@ -74,4 +69,3 @@ echo  Fertig! Alle 254 SSH-Verbindungen wurden gestartet.
 echo  Die Fenster schliessen sich automatisch nach Abschluss.
 echo ============================================================
 pause
-del "%HELPER%" 2>nul
