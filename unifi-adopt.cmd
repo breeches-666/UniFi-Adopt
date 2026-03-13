@@ -6,30 +6,24 @@ REM Pfad zum Skript-Ordner ermitteln
 set "SCRIPTDIR=%~dp0"
 
 REM plink.exe suchen: zuerst im Skript-Ordner, dann im PATH
-set "PLINK="
-if exist "%SCRIPTDIR%plink.exe" (
-    set "PLINK=%SCRIPTDIR%plink.exe"
-) else (
-    where plink >nul 2>nul
-    if not errorlevel 1 (
-        set "PLINK=plink"
-    )
-)
+if exist "%SCRIPTDIR%plink.exe" set "PLINK=%SCRIPTDIR%plink.exe" & goto :found
+where plink >nul 2>nul
+if not errorlevel 1 set "PLINK=plink" & goto :found
 
-if "%PLINK%"=="" (
-    echo ============================================================
-    echo  FEHLER: plink.exe wurde nicht gefunden!
-    echo.
-    echo  WICHTIG: plink.exe ist NICHT putty.exe!
-    echo  plink.exe ist das Kommandozeilen-SSH-Tool von PuTTY.
-    echo.
-    echo  Bitte lade plink.exe herunter und lege es in den
-    echo  gleichen Ordner wie dieses Skript.
-    echo  Download: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
-    echo ============================================================
-    pause
-    exit /b 1
-)
+echo ============================================================
+echo  FEHLER: plink.exe wurde nicht gefunden!
+echo.
+echo  WICHTIG: plink.exe ist NICHT putty.exe!
+echo  plink.exe ist das Kommandozeilen-SSH-Tool von PuTTY.
+echo.
+echo  Bitte lade plink.exe herunter und lege es in den
+echo  gleichen Ordner wie dieses Skript.
+echo  Download: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+echo ============================================================
+pause
+exit /b 1
+
+:found
 
 echo ============================================================
 echo  UniFi Adopt - SSH Network Scanner
