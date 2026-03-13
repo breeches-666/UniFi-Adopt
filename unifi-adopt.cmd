@@ -24,6 +24,8 @@ pause
 exit /b 1
 
 :found
+REM plink via PATH verfuegbar machen (vermeidet Quoting-Probleme bei Pfaden mit Leerzeichen)
+set "PATH=%SCRIPTDIR%;%PATH%"
 
 echo ============================================================
 echo  UniFi Adopt - SSH Network Scanner
@@ -58,7 +60,7 @@ echo.
 
 for /l %%i in (1,1,254) do (
     echo [%%i/254] Verbinde zu %SUBNET%.%%i ...
-    start "" /b cmd /c "echo y | "%PLINK%" -ssh -P 22 -l ubnt -pw ubnt -batch -no-antispoof %SUBNET%.%%i "set-inform http://%DOMAIN%:8080/inform" >nul 2>nul"
+    start "" /b cmd /c "echo y | plink -ssh -P 22 -l ubnt -pw ubnt %SUBNET%.%%i set-inform http://%DOMAIN%:8080/inform >nul 2>nul"
 )
 
 echo.
