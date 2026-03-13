@@ -58,9 +58,12 @@ echo Starte SSH-Verbindungen zu %SUBNET%.1 - %SUBNET%.254 ...
 echo Befehl: set-inform http://%DOMAIN%:8080/inform
 echo.
 
+REM "y" in Datei schreiben fuer automatische Host-Key-Akzeptanz
+echo y> "%TEMP%\plink_y.txt"
+
 for /l %%i in (1,1,254) do (
     echo [%%i/254] Verbinde zu %SUBNET%.%%i ...
-    start "UniFi %%i" /min cmd /c "echo y| plink -ssh -P 22 -l ubnt -pw ubnt %SUBNET%.%%i mca-cli-op set-inform http://%DOMAIN%:8080/inform"
+    start "UniFi %%i" /min cmd /c plink -ssh -P 22 -l ubnt -pw ubnt %SUBNET%.%%i mca-cli-op set-inform http://%DOMAIN%:8080/inform ^< "%TEMP%\plink_y.txt"
 )
 
 echo.
@@ -69,3 +72,4 @@ echo  Fertig! Alle 254 SSH-Verbindungen wurden gestartet.
 echo  Die Fenster schliessen sich automatisch nach Abschluss.
 echo ============================================================
 pause
+del "%TEMP%\plink_y.txt" 2>nul
